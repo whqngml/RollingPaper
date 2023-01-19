@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signup</title>
+    <link
+      rel="shortcut icon"
+      href="/static/img/favicon.png"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="/static/css/reset.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/signup.css" />
+    <!-- axios cdn -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <div id="wrap">
+      <h1 class="logo">
+        <a href="/">
+          <img src="/static/img/logo.png" alt="마음푸쉬로고" />
+        </a>
+      </h1>
+      <form name="signupForm" action="/signup" method="post">
+        <h2>회원가입</h2>
+        <label for="userId">
+          아이디<br />
+          <input
+            type="text"
+            name="userId"
+            id="userId"
+            required="required"
+            class="input-box"
+            placeholder="아이디를 입력하세요"
+          />
+        </label>
+        <br />
+        <div class="idCheckAlert"></div>
+        <br />
+        <label for="userPw">
+          비밀번호<br />
+          <input
+            type="password"
+            name="userPw"
+            id="userPw"
+            required="required"
+            class="input-box"
+            placeholder="****"
+          />
+        </label>
+        <br />
+        <label for="userName">
+          <br />
+          닉네임<br />
+          <input
+            type="text"
+            name="userName"
+            id="userName"
+            required="required"
+            class="input-box"
+            placeholder="페이지 내에서 사용될 닉네임입니다! 신중하세요🤔"
+          />
+        </label>
+        <button class="signupBtn" disabled>회원가입</button>
+      </form>
+    </div>
+    <script src="static/js/signup.js"></script>
+  </body>
+</html>

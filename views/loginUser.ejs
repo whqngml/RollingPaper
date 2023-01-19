@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login user</title>
+    <link
+      rel="shortcut icon"
+      href="/static/img/favicon.png"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="/static/css/reset.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/loginUser.css" />
+    <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </head>
+  <body>
+    <div id="wrap">
+      <% if (userSession) { %>
+      <form action="/logout" method="post">
+        <button>LogOut</button>
+      </form>
+      <% } %>
+      <h1><a href="/"><%= userName %> 님! 환영합니다.</a></h1>
+      <fieldset>
+        <div>
+          <a id="url" href="/paper/<%= userId %>/<%= userName %>">
+            지인들에게<br />내 롤링페이퍼를 공유하세요!<br />
+            NEXT ->
+          </a>
+          <p onclick="clip()" class="url">Click!<br />링크복사하기</p>
+        </div>
+        <!-- 공유하기 버튼 -->
+        <div class="share">
+          <button type="button" id="facebook" class="btn">
+            <span class="highlight">페이스북으로 공유하기</span>
+          </button>
+          <a id="kakao" class="btn" href="javascript:shareKakao();"
+            ><span class="highlight"> 카카오톡으로 공유하기</span>
+          </a>
+        </div>
+      </fieldset>
+    </div>
+    <script src="/static/js/loginUser.js"></script>
+  </body>
+</html>

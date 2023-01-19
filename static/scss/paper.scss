@@ -1,0 +1,258 @@
+$color-white: white;
+$color-black: black;
+
+body {
+  color: $color-white;
+}
+
+#wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: hidden;
+  .url {
+    position: relative;
+    text-align: center;
+    margin: 60px 0 0;
+    z-index: 1000;
+  }
+}
+
+#header {
+  margin: 10% 0;
+  font-size: 1.7rem;
+}
+h2 {
+  font-size: 1.7em;
+}
+.userId {
+  display: none;
+}
+
+// 메세지가 보이는 부분
+.postArea {
+  overflow: scroll;
+
+  display: block;
+  position: relative;
+
+  height: 500px;
+  z-index: 1000;
+
+  // 메세지 입력시 추가되는 클래스
+  .textArea {
+    cursor: pointer;
+    width: 10vw;
+    min-width: 300px;
+    height: 75px;
+    background-color: $color-white;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 10px 0;
+
+    &:hover .postId {
+      font-weight: 700;
+    }
+  }
+
+  .postContent {
+    margin: 20px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .postContainer {
+    color: black;
+  }
+}
+
+// 글 작성하는 모달
+.writeContent {
+  background-color: $color-white;
+  color: black;
+  position: relative;
+  padding: 5%;
+  width: 80%; //
+  min-width: 300px; //
+  height: 450px;
+  border-radius: 5px;
+
+  .writeArea {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .submitContent {
+      width: 100%; //
+      min-width: 300px; //
+      height: 160px;
+      resize: none;
+      margin: 20px 0;
+      padding: 10px;
+    }
+
+    .submitPw {
+      margin: 20px 0;
+      position: relative;
+      padding-left: 10px;
+      width: 100%; //
+      min-width: 300px; //
+      height: 25px;
+    }
+
+    button.submitGo {
+      cursor: pointer;
+      position: relative;
+      border: 1px solid $color-black;
+      background-color: $color-black;
+      color: white;
+      width: 50px;
+      padding: 5px;
+    }
+  }
+}
+
+// 작성 이미지 버튼
+.writeImg {
+  cursor: pointer;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: $color-white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 20px;
+
+  img {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+// 편지 디테일 모달 창
+.postContainerDetail {
+  background-color: $color-white;
+  color: black;
+  position: relative;
+  padding: 5%;
+  width: 80%;
+  min-width: 300px;
+  height: 400px;
+  min-height: 400px;
+  border-radius: 5px;
+  text-align: center;
+
+  .postIdDetail {
+    font-size: 1.5rem;
+    margin: 5px 0;
+  }
+  .postContentDetail {
+    height: 250px;
+    overflow: scroll;
+    text-align: start;
+    margin-top: 20px;
+    border: 1px solid $color-black;
+    padding: 10px;
+  }
+
+  .postBtn {
+    margin-top: 15px;
+    button {
+      margin: 0 10px;
+      border: 1px solid $color-black;
+      padding: 5px;
+      background-color: $color-black;
+      color: $color-white;
+    }
+  }
+
+  .postContentDetailEdit {
+    width: 90%;
+    height: 250px;
+    overflow: scroll;
+    text-align: start;
+    margin-top: 20px;
+    border: 1px solid $color-black;
+    padding: 10px;
+  }
+
+  .editPw {
+    // width: 90%;
+    // min-width: 300px;
+    height: 10px;
+    resize: none;
+    margin: 5px 0;
+    padding: 10px;
+  }
+}
+
+// 모달 닫기 버튼
+.close,
+.closeDetail,
+.closeDetailEdit {
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-end;
+}
+
+// 숨길때 쓰는 클래스
+.noshow {
+  display: none;
+}
+
+.top {
+  position: relative;
+  z-index: 1000;
+}
+
+.logout {
+  position: relative;
+}
+
+.logout-button {
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.5em;
+  position: relative;
+  right: 0;
+  top: -10px;
+}
+
+/*scroll bar customizing*/
+.postArea::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
+}
+
+/* emoticon 이모티콘 */
+.writeContent .writeArea .emoticon-list {
+  width: 90%;
+  min-width: 300px;
+  overflow: scroll;
+  overflow: auto;
+  white-space: nowrap;
+  height: 50px;
+  line-height: auto;
+}
+.emoticon-list::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
+}
+.writeContent .writeArea .emoticon-list .emoticon {
+  display: inline;
+  background-color: gainsboro;
+  border-radius: 10px;
+  padding: 5px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+img {
+  width: 100px;
+}
+
+.top {
+  width: 400px;
+  display: flex;
+  justify-content: space-between;
+}

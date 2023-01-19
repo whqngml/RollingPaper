@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Paper</title>
+    <link rel="stylesheet" href="/static/css/reset.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/snow.css" />
+    <link rel="stylesheet" href="/static/css/paper.css" />
+    <!-- axios cdn -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </head>
+  <body>
+    <div id="wrap">
+      <div id="header">
+        <div class="top">
+          <h1 class="logo">
+            <a href="/"
+              ><img src="/static/img/logo.png" alt="마음푸쉬로고"
+            /></a>
+          </h1>
+          <% if (userSession) { %>
+          <form action="/logout" method="post">
+            <div class="logout">
+              <button class="logout-button">
+                <%= userSession.userName %>님, 로그아웃하기
+              </button>
+            </div>
+          </form>
+          <% } %>
+        </div>
+      </div>
+      <h2><%= userName %>님에게 온 마음</h2>
+      <div class="userId"><%= userId %></div>
+      <!-- 편지 목록 -->
+      <div class="postArea">
+        <% for (let i = 0; i < data.length; i++) { %>
+        <div class="postContainer">
+          <div class="postBox textArea">
+            <div class="postId">📩 No. <%= data[i].dataValues.postId %></div>
+            <div class="postContent"><%= data[i].dataValues.postContent %></div>
+          </div>
+        </div>
+        <% } %>
+      </div>
+      <canvas id="canvas"> </canvas>
+
+      <!-- 편지 디테일 모달창 -->
+      <% for (let i = 0; i < data.length; i++) { %>
+      <div
+        class="postContainerDetail noshow Id<%= data[i].dataValues.postId %>"
+      >
+        <div>
+          <div class="closeDetail">X</div>
+        </div>
+        <div class="postBoxDetailContent">
+          <div class="postBoxDetail">
+            <div class="postIdDetail">
+              📩 <%= data[i].dataValues.postId %> 번째 마음
+            </div>
+            <div
+              class="postContentDetail Content<%= data[i].dataValues.postId %>"
+            >
+              <%= data[i].dataValues.postContent %>
+            </div>
+          </div>
+          <% if (userSession && userSession.userName === userName) { %>
+          <div class="noshow"></div>
+          <% } else { %>
+          <div class="postBtn id<%= data[i].dataValues.postId %>">
+            <button onclick="editBtn('<%= data[i].dataValues.postId %>')">
+              수정
+            </button>
+            <button onclick="deleteBtn('<%= data[i].dataValues.postId %>')">
+              삭제
+            </button>
+          </div>
+
+          <% } %>
+        </div>
+      </div>
+
+      <div class="postBtn id<%= data[i].dataValues.postId %>"></div>
+      <% } %>
+
+      <!-- 편지 작성 모달창 -->
+      <div class="writeContent noshow">
+        <div class="close" onclick="show()">
+          <div>X</div>
+        </div>
+        <div class="writeArea">
+          남기고 싶은 말
+          <textarea
+            class="submitContent"
+            type="text"
+            name="post"
+            placeholder="전하고 싶은 메세지를 250자 이하로 작성해 주세요"
+            maxlength="100"
+            required
+          ></textarea>
+          Emoticon
+          <ul class="emoticon-list">
+            <li class="emoticon emoticon-1">⸜(*ˊᗜˋ*)⸝</li>
+            <li class="emoticon emoticon-2">/(^p^)/</li>
+            <li class="emoticon emoticon-3">˚✧₊⁎( ˘ω˘ )⁎⁺˳✧</li>
+            <li class="emoticon emoticon-4">(╬☉д⊙)</li>
+            <li class="emoticon emoticon-5">ヽ(￣д￣;)ノ=3=3=3</li>
+            <li class="emoticon emoticon-6">(*´□`)ゞ</li>
+            <li class="emoticon emoticon-7">ヾ(*ゝω・*)ﾉ</li>
+            <li class="emoticon emoticon-8">（￣ε￣ʃƪ）</li>
+            <li class="emoticon emoticon-9">¯\(ºдಠ)/¯</li>
+            <li class="emoticon emoticon-10">ദ്ദി ˉ͈̀꒳ˉ͈́ )✧</li>
+            <li class="emoticon emoticon-11">( ﾟ▽ﾟ)/</li>
+            <li class="emoticon emoticon-12">╭(°ﾛ°")╯</li>
+            <li class="emoticon emoticon-13">٩( ᐛ )و</li>
+            <li class="emoticon emoticon-14">◕‿◕✿</li>
+            <li class="emoticon emoticon-15">＿φ(￣ー￣ )</li>
+          </ul>
+
+          <input
+            class="submitPw"
+            type="password"
+            name="postPw"
+            placeholder="글 수정, 삭제시 필요한 비밀번호를 30자 이하로 작성해 주세요"
+            required
+          />
+          <button class="submitGo" onclick="createPost()">입력</button>
+        </div>
+      </div>
+      <% if (userSession && userSession.userName === userName) { %>
+      <p onclick="copyUrl()" class="url">Click!<br />링크복사하기</p>
+      <% } else { %>
+      <!-- 편지 작성 모달 띄우는 이미지 버튼 -->
+      <div class="share writeImg" onclick="show()">
+        <img src="/static/img/writing.png" alt="작성하기" />
+      </div>
+      <% } %>
+    </div>
+
+    <script>
+      let submitGo = document.querySelector(".submitGo");
+      let submitContent = document.querySelector(".submitContent");
+      let submitPw = document.querySelector(".submitPw");
+      let userId = document.querySelector(".userId").textContent;
+
+      const createPost = () => {
+        // 빈값 유효성 검사
+        if (!submitContent.checkValidity()) {
+          return submitContent.focus();
+        } else if (!submitPw.checkValidity()) {
+          return submitPw.focus();
+        }
+        // 수정 250자 이하 검사
+        else if (submitContent.value.length > 250) {
+          alert("글자수는 250자 이하!");
+          return;
+        }
+        // 수정 빈값 입력 안됨
+        else if (submitContent.value.trim().length < 1) {
+          alert("내용을 입력해 주세요!");
+          return;
+        }
+        console.log(submitContent.value, submitPw.value);
+        axios({
+          method: "post",
+          url: "/post/create",
+          data: {
+            userId: userId,
+            postContent: submitContent.value,
+            postPw: submitPw.value,
+          },
+        }).then((res) => {
+          window.location.reload();
+        });
+        submitContent.value = "";
+        submitPw.value = "";
+        writeContent.classList.add("noshow");
+        postArea.classList.remove("noshow");
+      };
+
+      let postBoxDetail = document.querySelector(".postBoxDetail");
+      const editBtn = (id) => {
+        let postNum = document.querySelector(`.id${id}`);
+        console.log(id);
+        console.log(postNum);
+        console.log("edit!");
+
+        const editBox = `
+          <div class="editBox">
+            <input class="editPw" type="password" name="editPw">
+            <button onclick="editPwCheck('${id}')">비밀번호 확인</button>
+          </div>`;
+
+        postNum.innerHTML = editBox;
+      };
+
+      const editPwCheck = (id) => {
+        let editPw = document.querySelector(".editPw");
+        let postNum = document.querySelector(`.id${id}`);
+        console.log(editPw.value);
+        console.log(id);
+        axios({
+          method: "POST",
+          url: "/post/editPwCheck",
+          data: {
+            postId: id,
+            postPw: editPw.value,
+          },
+        })
+          .then((res) => {
+            console.log(res.data); // { postId: ?, postContent: ?, postPw: ?, userId: ? }
+
+            if (!res.data.result) {
+              alert("비밀번호가 틀렸습니다. 다시 확인해주세요!");
+              return;
+            } else {
+              let dataValues = res.data.dataValues;
+              let postContainerDetail = document.querySelector(
+                `.Id${dataValues.postId}`
+              );
+              let postContentDetail = document.querySelector(`.Content${id}`);
+              let postBoxDetailContent = document.querySelector(
+                ".postBoxDetailContent"
+              );
+              const editInput = `
+              <div class="postBoxDetail">
+                <div class="postIdDetail">
+                  📩 No. ${dataValues.postId} 번째 마음
+                </div>
+                <textarea type="text" onfocus
+                  class="postContentDetailEdit Content${dataValues.postId}"
+                >${dataValues.postContent}</textarea>
+              </div>
+              <div class="postBtn Btn${dataValues.postId}">
+                <button onclick="editPost('${dataValues.postId}')">
+                  수정
+                </button>
+              </div>
+            `;
+              postBoxDetailContent.innerHTML = editInput;
+            }
+          })
+          .then((data) => {
+            // console.log(data);
+            const closeDetailEdit = document.querySelector(".closeDetailEdit");
+            console.log(closeDetailEdit);
+            for (let i = 0; i < postContainer.length; i++) {
+              closeDetailEdit.addEventListener("click", () => {
+                postContainerDetail[i].classList.toggle("noshow");
+                postArea.classList.toggle("noshow");
+                writeImg.classList.toggle("noshow");
+                window.location.reload();
+              });
+            }
+          });
+      };
+
+      const editPost = (id) => {
+        console.log("editPost");
+        console.log(`${id}`);
+        let Content = document.querySelector(`.Content${id}`);
+        console.log(Content.value);
+        axios({
+          method: "POST",
+          url: "/post/editPost",
+          data: {
+            postId: id,
+            postContent: Content.value,
+          },
+        }).then((res) => {
+          console.log(res.data);
+          if (res.data) {
+            if (Content.value == "") {
+              alert("수정할 내용을 작성해 주세요");
+            } else {
+              console.log(Content.textContent);
+              console.log(Content.value);
+              Content.textContent = Content.value;
+              alert("수정되었습니다.");
+              document.location.href = "/paper/<%= userId %>/<%= userName %>";
+              return;
+            }
+          } else if (!res.data) {
+            alert("수정할 내용을 작성해 주세요");
+          }
+        });
+      };
+
+      const deleteBtn = (id) => {
+        let postContentDetail = document.querySelector(`.Content${id}`);
+        let postNum = document.querySelector(`.id${id}`);
+        console.log(id);
+        console.log(postContentDetail.textContent.trim());
+        console.log(postNum);
+        console.log("delete!");
+
+        const deleteBox = `
+          <div class="deleteBox">
+            <input class="deletePw" type="password" name="deletePw">
+            <button onclick="deletePwCheck('${id}')">비밀번호 확인 및 삭제</button>
+          </div>`;
+
+        postNum.innerHTML = deleteBox;
+      };
+
+      const deletePwCheck = (id) => {
+        let deletePw = document.querySelector(".deletePw");
+        let postNum = document.querySelector(`.id${id}`);
+        let postContentDetail = document.querySelector(`.Content${id}`);
+        console.log(`${id}`);
+        console.log(id);
+        console.log("!");
+        console.log(deletePw.value);
+        axios({
+          method: "POST",
+          url: "/post/deletePwCheck",
+          data: {
+            postId: id,
+            postPw: deletePw.value,
+          },
+        })
+          .then((res) => {
+            console.log(res.data);
+            if (!res.data) {
+              alert("비밀번호를 확인해주세요");
+              return;
+            } else {
+              let confirmDelete = confirm("정말 삭제하시겠습니까?");
+              if (confirmDelete === true) {
+                console.log(`${id}`);
+                axios({
+                  method: "POST",
+                  url: "/post/deletePost",
+                  data: {
+                    postId: `${id}`,
+                  },
+                }).then((res) => {
+                  document.location.href =
+                    "/paper/<%= userId %>/<%= userName %>";
+                });
+                return;
+              }
+            }
+          })
+          .then((data) => {
+            // console.log(data);
+            //
+          });
+      };
+    </script>
+    <script src="/static/js/paper.js"></script>
+    <script src="/static/js/snow.js"></script>
+  </body>
+</html>
